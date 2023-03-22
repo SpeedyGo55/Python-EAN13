@@ -89,7 +89,7 @@ def check_ean13():
     print(checknumber)
     if checknumber != int(number[12]):
         print("WRONG CHECKNUMBER")
-        return False
+        return None
     else:
         return number
 
@@ -120,9 +120,9 @@ def make_ean13(number):
     plt.show()
 
 
-if input("Generate Checknumber? (y/n): ") == "y":
+if input("Generate Check-number (Recommended)? (y/n): ") == "y":
     make_ean13(generate_checknumber())
-else: # check number
-    number = check_ean13()
-    if number != False:
-        make_ean13(number)
+else:  # check number
+    raw = check_ean13()
+    if raw is not None:
+        make_ean13(raw)
