@@ -1,5 +1,17 @@
+from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
+
+root = Tk()
+
+selected = BooleanVar()
+info = Label(root, text="Input 12 Digits:")
+info.pack()
+
+entry = Entry(root)
+entry.pack()
+
+
 
 decimal = "0"
 leftOdd = [
@@ -52,9 +64,8 @@ firstNumber = [
 ]
 
 
-def generate_checknumber():
+def generate_checknumber(number):
     checknumber = 0
-    number = str(input("Number (12 Digits): "))
     if len(number) != 12:
         print("WRONG")
     for i in range(0, 12):
@@ -72,9 +83,8 @@ def generate_checknumber():
     return number + str(checknumber)
 
 
-def check_ean13():
+def check_ean13(number):
     checknumber = 0
-    number = str(input("Number (13 Digits): "))
     information = number[:12]
 
     if len(information) != 12:
@@ -120,9 +130,31 @@ def make_ean13(number):
     plt.show()
 
 
-if input("Generate Check-number (Recommended)? (y/n): ") == "y":
-    make_ean13(generate_checknumber())
-else:  # check number
-    raw = check_ean13()
-    if raw is not None:
-        make_ean13(raw)
+def run():
+    if selected.get() == True:
+        make_ean13(generate_checknumber(entry.get()))
+    else:
+        make_ean13(check_ean13(entry.get()))
+    root.quit()
+def change_info():
+    info.config(text="")
+    global selected
+    print(selected)
+    if selected.get() == True:
+        info.config(text="Input 12 Digits:")
+    else:
+        info.config(text="Input 13 Digits:")
+
+R1 = Radiobutton(root, text="generate Checknumber automagically", variable=selected, value=True, command=change_info)
+
+R2 = Radiobutton(root, text="Input Checknumber along encoded Numbers", variable=selected, value=False, command=change_info)
+
+submit = Button(root, text="Submit", command=run)
+
+R1.pack()
+R2.pack()
+submit.pack()
+
+selected.set(True)
+
+root.mainloop()
