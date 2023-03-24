@@ -6,6 +6,7 @@ import numpy as np
 
 root = Tk()
 root.title("EAN-13 Generator")
+root.iconbitmap("icon.ico")
 
 selected = BooleanVar()
 info = Label(root, text="Input 12 Digits:")
