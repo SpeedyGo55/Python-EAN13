@@ -8,6 +8,11 @@ from tkinter import filedialog
 import matplotlib.pyplot as plt
 import numpy as np
 
+global setFigure
+# noinspection PyRedeclaration
+setFigure = False
+global label
+
 root = Tk()
 root.title("EAN-13 Generator")
 root.iconbitmap("icon.ico")
@@ -113,6 +118,8 @@ def check_ean13(number):
 
 
 def make_ean13(number):
+    global setFigure
+    global label
     first_digit = number[:1]
     number = number[1:]
     left = number[:6]
@@ -137,17 +144,13 @@ def make_ean13(number):
               interpolation='nearest')
     plt.savefig("Figure_1.png")
     img = PhotoImage(file="Figure_1.png")
-    global label
+    setFigure = True
     label = Label(root, image=img)
     label.image = img
     label.pack()
 
 
-global label
-
-
 def run(event=0):
-    global label
     try:
         label.destroy()
     except NameError:
@@ -195,11 +198,17 @@ def change_info():
 
 
 def save():
-    path = filedialog.asksaveasfilename(defaultextension=".png")
-    try:
-        plt.savefig(path)
-    except FileNotFoundError:
-        pass
+    if not setFigure:
+        return
+    else:
+        path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=(("PNG", "*.png"),
+                                                                                ("JPEG", "*.jpg"),
+                                                                                ("All Files", "*.*")))
+        try:
+            plt.savefig(path)
+        except Exception as e:
+            print(e)
+            pass
 
 
 def on_closing():
