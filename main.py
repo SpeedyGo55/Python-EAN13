@@ -132,13 +132,13 @@ def make_ean13(number):
     plt.show()
 
 
-def run():
+def run(event):
     if selected.get():
         num = generate_checknumber(entry.get())
         if num == "length":
             entry.delete(0, END)
             return
-        make_ean13(generate_checknumber(entry.get()))
+        make_ean13(num)
     else:
         num = check_ean13(entry.get())
         if num is not None:
@@ -157,6 +157,7 @@ def change_info():
     else:
         info.config(text="Input 13 Digits:")
 
+root.bind("<Return>", run)
 
 R1 = Radiobutton(root, text="Generate Checknumber automagically",
                  variable=selected, value=True, command=change_info)
