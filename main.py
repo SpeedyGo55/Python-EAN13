@@ -1,7 +1,6 @@
 from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
-import time
 
 root = Tk()
 root.title("EAN-13 Generator")
