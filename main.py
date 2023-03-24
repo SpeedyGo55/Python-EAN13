@@ -1,6 +1,10 @@
+from io import BytesIO
+import win32clipboard
+import PIL.Image
 import os
 import sys
 from tkinter import *
+from tkinter import filedialog
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -164,6 +168,23 @@ def run(event=0):
             return
 
 
+def copy():
+    try:
+        filepath = "Figure_1.png"
+        image = PIL.Image.open(filepath)
+        output = BytesIO()
+        image.convert("RGB").save(output, "BMP")
+        data = output.getvalue()[14:]
+        output.close()
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+        win32clipboard.CloseClipboard()
+    except Exception as e:
+        print(e)
+        pass
+
+
 def change_info():
     info.config(text="")
     global selected
@@ -171,6 +192,14 @@ def change_info():
         info.config(text="Input 12 Digits:")
     else:
         info.config(text="Input 13 Digits:")
+
+
+def save():
+    path = filedialog.asksaveasfilename(defaultextension=".png")
+    try:
+        plt.savefig(path)
+    except FileNotFoundError:
+        pass
 
 
 def on_closing():
@@ -193,10 +222,13 @@ R2 = Radiobutton(root, text="Input Checknumber along encoded Numbers",
                  variable=selected, value=False, command=change_info)
 
 submit = Button(root, text="Submit", command=run)
-
+save = Button(root, text="Save", command=save)
+copy = Button(root, text="Copy to Clipboard", command=copy)
 R1.pack()
 R2.pack()
 submit.pack()
+save.pack()
+copy.pack()
 selected.set(True)
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
