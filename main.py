@@ -1,8 +1,10 @@
 from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 root = Tk()
+root.title("EAN-13 Generator")
 
 selected = BooleanVar()
 info = Label(root, text="Input 12 Digits:")
@@ -10,8 +12,6 @@ info.pack()
 
 entry = Entry(root)
 entry.pack()
-
-
 
 decimal = "0"
 leftOdd = [
@@ -68,6 +68,7 @@ def generate_checknumber(number):
     checknumber = 0
     if len(number) != 12:
         print("WRONG")
+        return "length"
     for i in range(0, 12):
         if i % 2 == 0 or i == 0:
             checknumber += int(number[i])
@@ -89,6 +90,7 @@ def check_ean13(number):
 
     if len(information) != 12:
         print("WRONG LENGTH")
+        return None
     for i in range(0, 12):
         if i % 2 == 0 or i == 0:
             checknumber += int(number[i])
@@ -131,30 +133,42 @@ def make_ean13(number):
 
 
 def run():
-    if selected.get() == True:
+    if selected.get():
+        num = generate_checknumber(entry.get())
+        if num == "length":
+            entry.delete(0, END)
+            return
         make_ean13(generate_checknumber(entry.get()))
     else:
-        make_ean13(check_ean13(entry.get()))
+        num = check_ean13(entry.get())
+        if num is not None:
+            make_ean13(num)
+        else:
+            entry.delete(0, END)
+            return
     root.quit()
+
+
 def change_info():
     info.config(text="")
     global selected
-    print(selected)
-    if selected.get() == True:
+    if selected.get():
         info.config(text="Input 12 Digits:")
     else:
         info.config(text="Input 13 Digits:")
 
-R1 = Radiobutton(root, text="generate Checknumber automagically", variable=selected, value=True, command=change_info)
 
-R2 = Radiobutton(root, text="Input Checknumber along encoded Numbers", variable=selected, value=False, command=change_info)
+R1 = Radiobutton(root, text="Generate Checknumber automagically",
+                 variable=selected, value=True, command=change_info)
+
+R2 = Radiobutton(root, text="Input Checknumber along encoded Numbers",
+                 variable=selected, value=False, command=change_info)
 
 submit = Button(root, text="Submit", command=run)
 
 R1.pack()
 R2.pack()
 submit.pack()
-
 selected.set(True)
 
 root.mainloop()
