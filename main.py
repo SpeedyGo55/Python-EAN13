@@ -1,9 +1,12 @@
+import os
+import sys
 from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
 
 root = Tk()
 root.title("EAN-13 Generator")
+root.iconbitmap("icon.ico")
 
 selected = BooleanVar()
 info = Label(root, text="Input 12 Digits:")
@@ -124,14 +127,28 @@ def make_ean13(number):
     dpi = 100
 
     fig = plt.figure(figsize=(len(code) * pixel_per_bar / dpi, 2), dpi=dpi)
-    ax = fig.add_axes([0, 0, 1, 1])  # span the whole figure
+    ax = fig.add_axes([0, 0, 1, 1])
     ax.set_axis_off()
     ax.imshow(code.reshape(1, -1), cmap='binary', aspect='auto',
               interpolation='nearest')
-    plt.show()
+    plt.savefig("Figure_1.png")
+    img = PhotoImage(file="Figure_1.png")
+    global label
+    label = Label(root, image=img)
+    label.image = img
+    label.pack()
 
 
-def run(event):
+global label
+
+
+def run(event=0):
+    global label
+    try:
+        label.destroy()
+    except NameError:
+        pass
+    print(event)
     if selected.get():
         num = generate_checknumber(entry.get())
         if num == "length":
@@ -145,7 +162,6 @@ def run(event):
         else:
             entry.delete(0, END)
             return
-    root.quit()
 
 
 def change_info():
@@ -156,6 +172,18 @@ def change_info():
     else:
         info.config(text="Input 13 Digits:")
 
+
+def on_closing():
+    root.destroy()
+    try:
+        os.remove("Figure_1.png")
+    except FileNotFoundError:
+        pass
+    root.quit()
+    sys.exit(0)
+
+
+# noinspection PyTypeChecker
 root.bind("<Return>", run)
 
 R1 = Radiobutton(root, text="Generate Checknumber automagically",
@@ -170,5 +198,7 @@ R1.pack()
 R2.pack()
 submit.pack()
 selected.set(True)
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 root.mainloop()
