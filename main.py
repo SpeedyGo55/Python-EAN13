@@ -1,5 +1,5 @@
 from io import BytesIO
-import win32clipboard
+from pywin import *
 import PIL.Image
 import os
 import sys
@@ -171,21 +171,21 @@ def run(event=0):
             return
 
 
-def copy():
-    try:
-        filepath = "Figure_1.png"
-        image = PIL.Image.open(filepath)
-        output = BytesIO()
-        image.convert("RGB").save(output, "BMP")
-        data = output.getvalue()[14:]
-        output.close()
-        win32clipboard.OpenClipboard()
-        win32clipboard.EmptyClipboard()
-        win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
-        win32clipboard.CloseClipboard()
-    except Exception as e:
-        print(e)
-        pass
+#def copy():
+#    try:
+#        filepath = "Figure_1.png"
+#        image = PIL.Image.open(filepath)
+#        output = BytesIO()
+#        image.convert("RGB").save(output, "BMP")
+#        data = output.getvalue()[14:]
+#        output.close()
+#        win32clipboard.OpenClipboard()
+#        win32clipboard.EmptyClipboard()
+#        win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+#        win32clipboard.CloseClipboard()
+#    except Exception as e:
+#        print(e)
+#        pass
 
 
 def change_info():
@@ -232,12 +232,12 @@ R2 = Radiobutton(root, text="Input Checknumber along encoded Numbers",
 
 submit = Button(root, text="Submit", command=run)
 save = Button(root, text="Save", command=save)
-copy = Button(root, text="Copy to Clipboard", command=copy)
+#copy = Button(root, text="Copy to Clipboard", command=copy)
 R1.pack()
 R2.pack()
 submit.pack()
 save.pack()
-copy.pack()
+#copy.pack()
 selected.set(True)
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
